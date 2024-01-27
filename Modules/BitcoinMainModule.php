@@ -23,6 +23,12 @@ final class BitcoinMainModule extends UTXOMainModule implements Module
         $this->p2pk_prefix1 = '1';
         $this->p2pk_prefix2 = '00';
 
+        // Use OneAddressInScriptPubKey
+        // https://3xpl.com/bitcoin/transaction/1aba7e9475c73e9693b0432da95de6b1c48e3e05e25ef9d23227a32c03e2aa7e
+        // In this transaction, we want to get address like `bc1qxhmdufsvnuaaaer4ynz88fspdsxq2h9e9cetdj` rather than `script-xxx`
+        // Relative code: https://github.com/OneKeyHQ/3xplCore/blob/main/Modules/Common/UTXOMainModule.php#L147
+        $this->extra_features = [UTXOSpecialFeatures::OneAddressInScriptPubKey];
+
         // Tests
         $this->tests = [
             // First Bitcoin block
