@@ -184,7 +184,7 @@ abstract class EVMERC1155Module extends CoreModule
                 'extra'       => to_int256_from_0xhex('0x' . substr($log['data'], 2, 64)),
             ];
 
-            $currencies_to_process[] = $log['address'];
+            // $currencies_to_process[] = $log['address'];
         }
 
         foreach ($logs_batch as $log)
@@ -228,7 +228,7 @@ abstract class EVMERC1155Module extends CoreModule
                 ];
             }
 
-            $currencies_to_process[] = $log['address'];
+            // $currencies_to_process[] = $log['address'];
         }
 
         // Process currencies
