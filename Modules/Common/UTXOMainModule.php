@@ -60,7 +60,8 @@ abstract class UTXOMainModule extends CoreModule
         {
             $block_hash = $this->block_hash;
 
-            $block = requester_single($this->select_node(), endpoint: "rest/block/{$block_hash}.json", timeout: $this->timeout);
+            // Get block by rpc because our bitcoin fullnode do not provide rest API.
+            $block = requester_single($this->select_node(), params: ['method' => 'getblock', 'params' => [$block_hash, 2]], result_in: 'result', timeout: $this->timeout);
 
             $this->block_time = date('Y-m-d H:i:s', (int)$block['time']);
         }
