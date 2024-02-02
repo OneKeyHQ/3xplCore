@@ -141,7 +141,7 @@ abstract class EVMERC20Module extends CoreModule
                 'effect'      => to_int256_from_0xhex($log['data']),
             ];
 
-            $currencies_to_process[] = $log['address'];
+            // $currencies_to_process[] = $log['address'];
         }
 
         // Process currencies

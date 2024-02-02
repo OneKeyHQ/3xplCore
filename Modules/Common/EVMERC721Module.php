@@ -144,7 +144,7 @@ abstract class EVMERC721Module extends CoreModule
                 'extra'       => to_int256_from_0xhex($log['topics'][3]),
             ];
 
-            $currencies_to_process[] = $log['address'];
+            // $currencies_to_process[] = $log['address'];
         }
 
         // Process currencies

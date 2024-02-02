@@ -13,6 +13,8 @@
 require_once __DIR__ . '/Init.php';
 require_once __DIR__ . '/Engine/DebugHelpers.php';
 
+ini_set('memory_limit', '2048M');
+
 $input_argv = [];
 
 // Greeting
