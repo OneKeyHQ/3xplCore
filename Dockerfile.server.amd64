@@ -5,3 +5,6 @@ WORKDIR 3xpl
 COPY . /3xpl
 
 EXPOSE 9501
+
+# linux
+# docker build -f Dockerfile.server.amd64 -t the3xpl-server:amd64 .
