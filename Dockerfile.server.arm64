@@ -1,4 +1,4 @@
-FROM okdaodine/openswoole_php8.2:arm64
+FROM openswoole_php8.2:arm64
 
 WORKDIR 3xpl
 
