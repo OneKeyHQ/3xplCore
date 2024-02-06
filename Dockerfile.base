@@ -1,0 +1,19 @@
+from ubuntu:22.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Shanghai
+
+RUN apt update
+RUN apt install vim -y
+
+RUN apt update
+RUN dpkg -l | grep php | tee packages.txt
+RUN apt install -y software-properties-common && add-apt-repository ppa:ondrej/php -y
+RUN apt update
+RUN apt install php8.2 php8.2-cli php8.2-curl php8.2-pgsql php8.2-bcmath php8.2-mbstring php8.2-intl -y
+
+RUN apt install -y software-properties-common && add-apt-repository ppa:openswoole/ppa -y
+RUN apt install -y php8.2-openswoole
+
+# docker build -f Dockerfile.base -t openswoole_php8.2:amd64 .
+# docker build -f Dockerfile.base -t openswoole_php8.2:arm64 .

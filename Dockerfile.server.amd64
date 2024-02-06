@@ -1,0 +1,7 @@
+FROM okdaodine/openswoole_php8.2:amd64
+
+WORKDIR 3xpl
+
+COPY . /3xpl
+
+EXPOSE 9501
