@@ -122,6 +122,49 @@ function requester_single($daemon, $endpoint = '', $params = [], $result_in = ''
         return $output;
 }
 
+function curl_multi_exec_with_retry($mh, &$active, $maxRetries = 60, $retryDelay = 1, $validCodes = [200])
+{
+    $retryCounts = [];
+
+    do {
+        $status = curl_multi_exec($mh, $active);
+        if ($status != CURLM_OK) {
+            break;
+        }
+        curl_multi_select($mh);
+
+        while ($info = curl_multi_info_read($mh)) {
+            $handle = $info['handle'];
+
+            if (!isset($retryCounts[(int)$handle])) {
+                $retryCounts[(int)$handle] = 0;
+            }
+
+            $response = curl_multi_getcontent($handle);
+            $error = curl_errno($handle);
+            $in = curl_getinfo($handle);
+
+            if ($error || !in_array($in['http_code'], $validCodes)) {
+                if ($retryCounts[(int)$handle] < $maxRetries) {
+                    $retryCounts[(int)$handle]++;
+                    sleep($retryDelay);
+
+                    // Reset and re-add handle
+                    curl_multi_remove_handle($mh, $handle);
+                    curl_multi_add_handle($mh, $handle);
+                    $active = true;
+                } else {
+                    curl_multi_remove_handle($mh, $handle);
+                }
+            } else {
+                curl_multi_remove_handle($mh, $handle);
+            }
+        }
+    } while ($active && $status == CURLM_OK);
+
+    return $status;
+}
+
 // Multiple curl requests
 // $limit is the limit on the number of concurrent requests.
 function requester_multi($single_set, $limit, $timeout = 600, $valid_codes = [200], $post_process = false)
@@ -145,7 +188,7 @@ function requester_multi($single_set, $limit, $timeout = 600, $valid_codes = [20
 
     do
     {
-        $status = curl_multi_exec($mh, $active);
+        $status = curl_multi_exec_with_retry($mh, $active, 60, 1, $valid_codes);
 
         foreach ($current_chunk as $k => $ci)
         {
