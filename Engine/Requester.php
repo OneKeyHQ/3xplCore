@@ -144,7 +144,14 @@ function curl_multi_exec_with_retry($mh, &$active, $maxRetries = 60, $retryDelay
             $error = curl_errno($handle);
             $in = curl_getinfo($handle);
 
-            if ($error || !in_array($in['http_code'], $validCodes)) {
+            // check json of response
+            $is_valid_json = false;
+            if ($response) {
+                $json_result = json_decode($response, associative: true, depth: 4096, flags: JSON_BIGINT_AS_STRING);
+                $is_valid_json = (json_last_error() === JSON_ERROR_NONE && $json_result !== null);
+            }
+
+            if ($error || !in_array($in['http_code'], $validCodes) || !$is_valid_json) {
                 if ($retryCounts[(int)$handle] < $maxRetries) {
                     $retryCounts[(int)$handle]++;
                     sleep($retryDelay);
